@@ -1,6 +1,6 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { colors } from "../../constants/styles";
-import getFormattedDate from "./../../utils/date.js";
+import { getFormattedDate } from "./../../utils/date.js";
 import { useNavigation } from "@react-navigation/native";
 
 function ExpenseItem({ id, description, date, amount }) {

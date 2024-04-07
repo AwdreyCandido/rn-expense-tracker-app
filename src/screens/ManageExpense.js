@@ -3,8 +3,13 @@ import { useLayoutEffect } from "react";
 import IconButton from "../components/buttons/icon-button/IconButton";
 import { colors } from "../constants/styles";
 import CustomButton from "../components/buttons/custom-button/CustomButton";
+import { useContext } from "react";
+import { ExpensesContext } from "./../store/ExpensesContext";
 
 function ManageExpense({ route, navigation }) {
+  const { addExpense, updateExpense, deleteExpense } =
+    useContext(ExpensesContext);
+
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
 
@@ -14,17 +19,37 @@ function ManageExpense({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
-  function deleteExpenseHandler() {}
-  function cancelHandler() {}
-  function confirmHandler() {}
+  function confirmHandler() {
+    if (isEditing) {
+      updateExpense(expenseId, {
+        date: new Date("2024-4-7"),
+        description: "A new expense updated",
+        amount: 9.99,
+      });
+    } else {
+      addExpense({
+        date: new Date("2024-4-7"),
+        description: "A new expense",
+        amount: 9.99,
+      });
+    }
+    navigation.goBack();
+  }
+  function deleteExpenseHandler() {
+    deleteExpense(expenseId);
+    navigation.goBack();
+  }
+  function cancelHandler() {
+    navigation.goBack();
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        <CustomButton style={{flex:1}} mode="flat" onPress={cancelHandler}>
+        <CustomButton style={{ flex: 1 }} mode="flat" onPress={cancelHandler}>
           Cancel
         </CustomButton>
-        <CustomButton style={{flex:1}} onPress={confirmHandler}>
+        <CustomButton style={{ flex: 1 }} onPress={confirmHandler}>
           {isEditing ? "Update" : "Add"}
         </CustomButton>
       </View>
@@ -58,7 +83,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 20
+    gap: 20,
   },
 });
 
