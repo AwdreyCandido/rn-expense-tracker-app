@@ -8,53 +8,30 @@ import { ExpensesContext } from "./../store/ExpensesContext";
 import ExpenseForm from "../components/expense-form/ExpenseForm";
 
 function ManageExpense({ route, navigation }) {
-  const { addExpense, updateExpense, deleteExpense } =
+  const {expenses,deleteExpense } =
     useContext(ExpensesContext);
+
 
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: isEditing ? "Edit Expense" : "Add New Expense",
-    });
-  }, [navigation, isEditing]);
+  const selectedExpense = expenses.find(
+    (expense) => expense.id === expenseId
+  );
 
-  function confirmHandler() {
-    if (isEditing) {
-      updateExpense(expenseId, {
-        date: new Date("2024-4-7"),
-        description: "A new expense updated",
-        amount: 9.99,
-      });
-    } else {
-      addExpense({
-        date: new Date("2024-4-7"),
-        description: "A new expense",
-        amount: 9.99,
-      });
-    }
-    navigation.goBack();
-  }
   function deleteExpenseHandler() {
     deleteExpense(expenseId);
-    navigation.goBack();
-  }
-  function cancelHandler() {
     navigation.goBack();
   }
 
   return (
     <View style={styles.container}>
-      <ExpenseForm />
-      <View style={styles.buttonContainer}>
-        <CustomButton style={{ flex: 1 }} mode="flat" onPress={cancelHandler}>
-          Cancel
-        </CustomButton>
-        <CustomButton style={{ flex: 1 }} onPress={confirmHandler}>
-          {isEditing ? "Update" : "Add"}
-        </CustomButton>
-      </View>
+      <ExpenseForm
+        navigation={navigation}
+        expenseId={expenseId}
+        isEditing={isEditing}
+        defaultValues={selectedExpense}
+      />
       {isEditing && (
         <View style={styles.icon}>
           <IconButton
